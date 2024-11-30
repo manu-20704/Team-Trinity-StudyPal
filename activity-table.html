@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activity Details</title>
+  <style>
+    /* Table Styling */
+    body {
+      font-family: Arial, sans-serif;
+      color: white;
+      background-color: #000;
+      margin: 0;
+      padding: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    table, th, td {
+      border: 1px solid #ffc107;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #ffc107;
+      color: #222;
+    }
+
+    td {
+      background-color: #222;
+      color: white;
+    }
+
+    button {
+      background-color: #ffc107;
+      color: black;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    .clear-button {
+      background-color: #ffeb3b; /* Yellow color */
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Activity Details</h1>
+
+  <!-- Table to Display Activity Details -->
+  <table>
+    <thead>
+      <tr>
+        <th>Activity Name</th>
+        <th>Deadline</th>
+        <th>Team Member</th>
+        <th>Task</th>
+      </tr>
+    </thead>
+    <tbody id="activityTableBody">
+      <!-- Dynamic data will be inserted here -->
+    </tbody>
+  </table>
+
+  <button onclick="window.location.href='Createactivity.html';">Create Activity</button>
+  <button class="clear-button" onclick="clearActivityData();">Clear</button>
+
+  <script>
+    // Load the stored activity data from localStorage
+    const activityData = JSON.parse(localStorage.getItem("activityData"));
+
+    const activityTableBody = document.getElementById("activityTableBody");
+
+    if (activityData) {
+      // Create a row for the activity details (activity name and deadline)
+      const activityRow = document.createElement("tr");
+
+      activityRow.innerHTML = `
+        <td>${activityData.activityName}</td>
+        <td>${activityData.deadline}</td>
+        <td colspan="2">N/A</td> <!-- For the header row -->
+      `;
+      
+      activityTableBody.appendChild(activityRow);
+
+      // Loop through each team member and display their task
+      activityData.team.forEach(member => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td></td> <!-- Empty cell for Activity Name -->
+          <td></td> <!-- Empty cell for Deadline -->
+          <td>${member.name}</td>
+          <td>${member.task}</td>
+        `;
+        activityTableBody.appendChild(row);
+      });
+    } else {
+      // If no activity data is found, display a message
+      const noDataRow = document.createElement("tr");
+      noDataRow.innerHTML = `
+        <td colspan="4">No activity data found.</td>
+      `;
+      activityTableBody.appendChild(noDataRow);
+    }
+
+    // Function to clear activity data
+    function clearActivityData() {
+      // Clear the localStorage
+      localStorage.removeItem("activityData");
+
+      // Clear the table content
+      activityTableBody.innerHTML = `
+        <tr>
+          <td colspan="4">No activity data found.</td>
+        </tr>
+      `;
+    }
+  </script>
+
+</body>
+</html>

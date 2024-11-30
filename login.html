@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login & Signup</title>
+  <style>
+    /* Global Styles */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Background Video */
+    video.background-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1; /* Ensure the video stays behind the content */
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start; /* Align forms to the top */
+      align-items: center;
+      z-index: 1; /* Ensures the form is in front of the video */
+      padding-top: 100px; /* Added padding to push the login form down */
+    }
+
+    .form-box {
+      background-color: rgba(51, 51, 51, 0.7); /* Semi-transparent background */
+      padding: 30px;
+      border-radius: 15px;
+      border: 2px solid #c8a12b;;
+      width: 350px;
+      margin-bottom: 20px;
+    }
+
+    .form-header {
+      background-color: #c8a12b;;
+      color: black;
+      text-align: center;
+      padding: 12px;
+      font-weight: bold;
+      border-radius: 5px;
+      margin-bottom: 25px;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    .input-group label {
+      color: white;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 5px;
+      border: 1px solid #555;
+      background-color: #444;
+      color: white;
+      font-size: 16px;
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: #c8a12b;;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background-color: #c8a12b;
+      color: black;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .btn:hover {
+      background-color: #c8a12b;;
+    }
+
+    .signup-text {
+      text-align: center;
+      color: white;
+      font-size: 14px;
+    }
+
+    .signup-text a {
+      color: #c8a12b;;
+      text-decoration: none;
+    }
+
+    .signup-text a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Video -->
+  <video class="background-video" autoplay muted loop>
+    <source src="C:\Users\manu2\Downloads\study schedule.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <div class="container">
+    <!-- Login Box -->
+    <div class="form-box" id="login-form">
+      <div class="form-header">Login</div>
+      <form action="index.html" method="post">
+        <div class="input-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" required>
+        </div>
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+        <input type="submit" class="btn" value="Submit">
+        <p class="signup-text">Don't have an account? <a href="javascript:void(0);" onclick="toggleForm()">Sign Up</a></p>
+      </form>
+    </div>
+
+    <!-- Sign Up Box -->
+    <div class="form-box" id="signup-form">
+      <div class="form-header">Sign Up</div>
+      <form action="#" method="post">
+        <div class="input-group">
+          <label for="signup-username">Username</label>
+          <input type="text" id="signup-username" name="signup-username" required>
+        </div>
+        <div class="input-group">
+          <label for="signup-email">Email</label>
+          <input type="email" id="signup-email" name="signup-email" required>
+        </div>
+        <div class="input-group">
+          <label for="signup-password">Password</label>
+          <input type="password" id="signup-password" name="signup-password" required>
+        </div>
+        <input type="submit" class="btn" value="Submit">
+        <p class="signup-text">Already have an account? <a href="javascript:void(0);" onclick="toggleForm()">Login</a></p>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    function toggleForm() {
+      var loginForm = document.getElementById("login-form");
+      var signupForm = document.getElementById("signup-form");
+      loginForm.style.display = loginForm.style.display === "none" ? "block" : "none";
+      signupForm.style.display = signupForm.style.display === "none" ? "block" : "none";
+    }
+
+    // Initially show login form
+    document.getElementById("signup-form").style.display = "none";
+  </script>
+
+</body>
+</html>

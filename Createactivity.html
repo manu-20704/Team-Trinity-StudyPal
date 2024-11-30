@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create New Activity</title>
+  <style>
+    /* Page Styling */
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      color: white;
+      background-color: #000; /* Fallback background */
+    }
+
+    /* Background Video Styling */
+    .video-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    /* Form Container */
+    .form-container {
+      background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black */
+      border: 2px solid yellow;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 600px;
+      margin: 50px auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-sizing: border-box;
+    }
+
+    /* Form Heading */
+    .form-container h2 {
+      text-align: center;
+      color: yellow;
+      margin-bottom: 20px;
+    }
+
+    /* Form Fields */
+    .form-container label {
+      display: block;
+      margin-bottom: 5px;
+      color: white;
+      width: 100%;
+      text-align: left;
+    }
+
+    .form-container input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      background-color: #444;
+      color: white;
+      box-sizing: border-box;
+    }
+
+    /* Add Member Button */
+    .form-container button.add-member {
+      background-color: #ffc107;
+      color: black;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 15px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    /* Submit Button */
+    .form-container button.submit {
+      background-color: #ffc107;
+      color: #444;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      width: 100%;
+    }
+
+    .form-container button.submit:hover {
+      background-color: #ffc107;
+    }
+
+    /* Table Styling */
+    .table-container {
+      width: 100%;
+      overflow-x: auto; /* Add horizontal scroll for small screens */
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    table, th, td {
+      border: 1px solid #ffc107;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #ffc107;
+      color: #222;
+    }
+
+    td {
+      background-color: #222;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Video -->
+  <video class="video-background" autoplay muted loop>
+    <source src="C:\Users\manu2\Downloads\study schedule.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <!-- Form Container -->
+  <div class="form-container">
+    <h2>Create New Activity</h2>
+    <form id="createActivityForm">
+      <label for="activityName">Activity Name</label>
+      <input type="text" id="activityName" name="activityName" placeholder="Enter activity name" required>
+
+      <!-- Team Member Input -->
+      <label for="teamMember">Add Team Member</label>
+      <input type="text" id="teamMember" name="teamMember" placeholder="Enter team member name">
+      <button type="button" class="add-member" id="addMember">Add Member</button>
+
+      <!-- Team Members Table -->
+      <div class="table-container">
+        <table id="teamTable">
+          <thead>
+            <tr>
+              <th>Member Name</th>
+              <th>Task to Be Allocated</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Default user (You) row -->
+            <tr>
+              <td>You</td>
+              <td><input type="text" placeholder="Add task for You"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <button type="submit" class="submit">Create Activity</button>
+    </form>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+    // Reference to the table body
+    const teamTableBody = document.querySelector("#teamTable tbody");
+
+    // Add Team Member Logic
+    document.getElementById("addMember").addEventListener("click", function () {
+      const memberName = document.getElementById("teamMember").value.trim();
+
+      if (memberName) {
+        // Add a new row with member name and task input
+        const newRow = document.createElement("tr");
+        newRow.innerHTML = `
+          <td>${memberName}</td>
+          <td><input type="text" placeholder="Add task for ${memberName}"></td>
+        `;
+        teamTableBody.appendChild(newRow);
+
+        // Clear the input field
+        document.getElementById("teamMember").value = "";
+      } else {
+        alert("Please enter a member name.");
+      }
+    });
+
+    // Form Submission Logic
+    document.getElementById("createActivityForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const activityName = document.getElementById("activityName").value;
+      const teamData = [];
+
+      // Collect team members and their tasks
+      const rows = teamTableBody.querySelectorAll("tr");
+      rows.forEach(row => {
+        const name = row.querySelector("td:first-child").textContent;
+        const task = row.querySelector("td:last-child input").value;
+        teamData.push({ name, task });
+      });
+
+      const activityData = {
+        activityName,
+        team: teamData
+      };
+
+      console.log(activityData); // Replace this with API call
+      alert("Activity Created Successfully!");
+      window.location.href = "index.html"; // Redirect to main page
+    });
+  </script>
+
+</body>
+</html>

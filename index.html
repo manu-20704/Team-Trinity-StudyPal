@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #000; /* Background changed to black */
+      color: #fff;
+    }
+
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background-color: #252424;
+      border-right: 1px solid #333;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start; /* Align items to the top */
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      padding: 20px;
+      text-align: center;
+      color: #ffc107;
+    }
+
+    .sidebar nav ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar nav ul li {
+      margin: 15px 0;
+      text-align: center;
+    }
+
+    .sidebar nav ul li a {
+      text-decoration: none;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    .sidebar nav ul li a:hover {
+      color: #ffc107;
+    }
+
+    .sidebar-footer {
+      padding: 20px;
+      text-align: center;
+    }
+
+    .sidebar-footer a {
+      display: block;
+      color: #666;
+      margin: 10px 0;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      padding: 20px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .new-task-button {
+      padding: 10px 20px;
+      background-color: #ffc107;
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .new-task-button:hover {
+      background-color: #e0a800;
+    }
+
+    .dashboard {
+      display: flex;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    /* Calendar, Tasks, Tracking */
+    .calendar, .tasks, .tracking {
+      flex: 1;
+      background-color: #1a1a1a;
+      padding: 20px;
+      border: 2px solid #ffc107; /* Always show yellow border */
+      border-radius: 5px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+      transition: border 0.3s ease; /* Smooth border transition */
+    }
+
+    .calendar:hover, .tasks:hover, .tracking:hover {
+      border: 3px solid #ffc107; /* Thicker yellow border on hover */
+    }
+
+    .calendar .days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .day {
+      padding: 10px;
+      text-align: center;
+      border: 1px solid #333;
+      border-radius: 5px;
+      color: #fff;
+    }
+
+    .highlighted {
+      background-color: #ffc107;
+      color: #000;
+    }
+
+    .tasks ul, .tracking ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .tasks li, .tracking li {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .tasks input[type="checkbox"] {
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">Study Pal</div>
+      <nav>
+        <ul>
+          <li><a href="#" class="active">Dashboard</a></li>
+          <li><a href="#">My Tasks</a></li>
+          <li><a href="C:\Users\manu2\vscode_practice\notifications.html">Notifications</a></li>
+          <li><a href="C:\Users\manu2\vscode_practice\activity-table.html">Group Activity</a></li>
+        </ul>
+      </nav>
+      <div class="sidebar-footer">
+        <a href="#">Settings</a>
+        <a href="#">Log out</a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header>
+        <h1>Welcome<br>Here is the agenda for today !!</h1>
+        <header>
+          <a href="new-task.html" class="new-task-button">+ New Task</a>
+        </header>
+        
+      </header>
+      <section class="dashboard">
+        <!-- Calendar -->
+        <div class="calendar">
+          <h2 id="calendar-month-year"></h2>
+          <div class="days" id="calendar-days">
+            <!-- Days will be dynamically inserted here -->
+          </div>
+        </div>
+
+<!-- My Tasks Section -->
+<div class="tasks">
+  <h2>My Tasks</h2>
+  <ul id="tasks-list">
+    <!-- Task items will be dynamically added here -->
+  </ul>
+</div>
+
+<!-- My Tracking Section -->
+<div class="tracking">
+  <h2>My Tracking</h2>
+  <ul id="tracking-list">
+    <!-- Tracking tasks will be dynamically loaded here -->
+  </ul>
+</div>
+
+<script>
+  // Initialize localStorage with sample tasks if not already set
+  if (!localStorage.getItem("tasks")) {
+    localStorage.setItem(
+      "tasks",
+      JSON.stringify([
+        { taskName: "Study for Math Exam", dueDate: "Today", duration: 0, completed: false },
+        { taskName: "Complete Science Assignment", dueDate: "Tomorrow", duration: 0, completed: false },
+        { taskName: "Research for History Project", dueDate: "This Week", duration: 0, completed: false },
+        { taskName: "Review Physics Notes", dueDate: "This Week", duration: 0, completed: false },
+        { taskName: "Submit English Essay", dueDate: "Next Week", duration: 0, completed: false },
+      ])
+    );
+  }
+
+  window.addEventListener("DOMContentLoaded", () => {
+    loadTasks(); // Load tasks when the page is loaded
+  });
+
+  function loadTasks() {
+    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+    // Update "My Tasks" section
+    const tasksList = document.querySelector("#tasks-list");
+    tasksList.innerHTML = "";
+
+    tasks.forEach((task, index) => {
+      if (!task.completed) {
+        const taskItem = document.createElement("li");
+        taskItem.innerHTML = `
+          <a href="task-details.html?task=${index + 1}">
+            <span>${task.taskName}</span>
+            <span class="due-date">${task.completed ? "Completed" : `Due: ${task.dueDate}`}</span>
+          </a>
+          <button class="delete-btn" onclick="deleteTask(${index})">Delete</button>
+        `;
+        tasksList.appendChild(taskItem);  
+      }
+    });
+
+    // Update "My Tracking" section
+    const trackingList = document.querySelector("#tracking-list");
+    trackingList.innerHTML = "";
+
+    tasks.forEach((task, index) => {
+      if (!task.completed) {
+        const trackingItem = document.createElement("li");
+        trackingItem.innerHTML = `
+          <div class="task-details">
+            <span class="task-name">${task.taskName}</span>
+            <div class="task-timer">
+              <span id="timer${index + 1}" class="timer">25:00</span>
+              <button class="timer-btn" onclick="startTimer('timer${index + 1}', ${index})">Start</button>
+              <button class="timer-btn" onclick="pauseTimer('timer${index + 1}', ${index})">Pause</button>
+              <button class="timer-btn" onclick="resetTimer('timer${index + 1}', ${index})">Reset</button>
+            </div>
+          </div>
+        `;
+        trackingList.appendChild(trackingItem);
+      }
+    });
+  }
+
+  // Function to delete a task from "My Tasks"
+  function deleteTask(index) {
+    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    tasks.splice(index, 1); // Remove the task from the array
+    localStorage.setItem("tasks", JSON.stringify(tasks)); // Update localStorage
+
+    // Reload the tasks to reflect the change
+    loadTasks();
+  }
+
+  // Function to delete a task from "My Tracking"
+  function deleteTrackingTask(index) {
+    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    tasks.splice(index, 1); // Remove the task from the array
+    localStorage.setItem("tasks", JSON.stringify(tasks)); // Update localStorage
+
+    // Reload the tracking list to reflect the change
+    loadTasks();
+  }
+
+  // Timer functionality (start, pause, reset)
+  let timers = {};
+  const INITIAL_TIME = 25 * 60; // 25 minutes in seconds
+
+  function startTimer(timerId, index) {
+    if (timers[timerId]) return; // Prevent multiple intervals from running simultaneously
+
+    const timerElement = document.getElementById(timerId);
+    let [minutes, seconds] = timerElement.textContent.split(":").map(Number);
+
+    timers[timerId] = setInterval(() => {
+      if (seconds === 0 && minutes === 0) {
+        clearInterval(timers[timerId]);
+        timers[timerId] = null;
+        alert("Time's up!");
+      } else {
+        if (seconds === 0) {
+          minutes--;
+          seconds = 59;
+        } else {
+          seconds--;
+        }
+        timerElement.textContent = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+      }
+    }, 1000);
+
+    // Update the task duration in localStorage
+    const tasks = JSON.parse(localStorage.getItem("tasks"));
+    tasks[index].duration += 1;
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }
+
+  function pauseTimer(timerId, index) {
+    clearInterval(timers[timerId]);
+    timers[timerId] = null;
+
+    // Save the paused time in localStorage
+    const tasks = JSON.parse(localStorage.getItem("tasks"));
+    const timerElement = document.getElementById(timerId);
+    const [minutes, seconds] = timerElement.textContent.split(":").map(Number);
+    tasks[index].duration = minutes * 60 + seconds;  // Store the time in seconds
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }
+
+  function resetTimer(timerId, index) {
+    clearInterval(timers[timerId]);
+    timers[timerId] = null;
+
+    const timerElement = document.getElementById(timerId);
+    const minutes = Math.floor(INITIAL_TIME / 60);
+    const seconds = INITIAL_TIME % 60;
+
+    timerElement.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+    // Reset the task duration in localStorage
+    const tasks = JSON.parse(localStorage.getItem("tasks"));
+    tasks[index].duration = 0;
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }
+</script>
+
+<style>
+  .tasks ul,
+  .tracking ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .tasks li,
+  .tracking li {
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .tasks li a,
+  .tracking li .task-details {
+    color: white;
+    text-decoration: none;
+  }
+
+  .tasks li .due-date {
+    color: #ffc107;
+    font-weight: bold;
+  }
+
+  .timer {
+    color: #ffc107;
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-right: 15px;
+  }
+
+  .timer-btn {
+    padding: 5px 10px;
+    background-color: #ffc107;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .timer-btn:hover {
+    background-color: #e0a800;
+  }
+
+  .delete-btn {
+    background-color: #ffc107;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .delete-btn:hover {
+    background-color: #e0a800;
+  }
+</style>
+
+  <script>
+    // Get current date, month, and year
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth();
+    const currentYear = currentDate.getFullYear();
+    const currentDay = currentDate.getDate();
+
+    // Get the number of days in the current month
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+    // Get the first day of the month
+    const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+
+    // Function to generate the calendar
+    function generateCalendar() {
+      // Set the month and year header
+      const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      document.getElementById('calendar-month-year').textContent = `${monthNames[currentMonth]} ${currentYear}`;
+
+      // Get the calendar days container
+      const daysContainer = document.getElementById('calendar-days');
+
+      // Add empty cells for the first day of the month
+      for (let i = 0; i < firstDayOfMonth; i++) {
+        const emptyDay = document.createElement('div');
+        daysContainer.appendChild(emptyDay);
+      }
+
+      // Add actual days of the month
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dayElement = document.createElement('div');
+        dayElement.classList.add('day');
+        dayElement.textContent = day;
+
+        // Highlight the current day
+        if (day === currentDay) {
+          dayElement.classList.add('highlighted');
+        }
+
+        daysContainer.appendChild(dayElement);
+      }
+    }
+
+    // Generate the calendar when the page loads
+    generateCalendar();
+  </script>
+</body>
+</html>
